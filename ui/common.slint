@@ -1,0 +1,5 @@
+export enum Page { nowplaying, search, settings }
+
+export global PrinterState {
+    in property <Page> active-page: Page.nowplaying;
+}

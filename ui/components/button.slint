@@ -1,0 +1,22 @@
+export component IconButton inherits Rectangle {
+    in property <image> icon;
+    callback clicked;
+
+    width: 100%;
+    height: 100%;
+    background: touch.pressed ? rgba(0, 0, 0, 0.1) : transparent;
+    border-radius: 16px;
+
+    Image {
+        source: root.icon;
+        vertical-alignment: center;
+        horizontal-alignment: center;
+        width: 60%;
+        height: 60%;
+    }
+
+    touch := TouchArea {
+        mouse-cursor: pointer;
+        clicked => { root.clicked(); }
+    }
+}

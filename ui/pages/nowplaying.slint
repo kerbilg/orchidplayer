@@ -1,0 +1,119 @@
+import { IconButton } from "../components/button.slint";
+import { Slider } from "../components/slider.slint";
+import { CallbackHandler } from "../callbacks.slint";
+
+export component Nowplaying inherits Rectangle {
+
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        HorizontalLayout {
+            cross-axis-alignment: center;
+            alignment: center;
+            x: 20px;
+            Rectangle {
+                width: 300px;
+                height: 400px;
+                VerticalLayout {
+                    alignment: center;
+                    cross-axis-alignment: center;
+                    Rectangle {
+                        width: 100%;
+                        height: 300px;
+                        background: rgba(0, 0, 0, 0.1);
+                        border-radius: 16px;
+                        clip: true;
+                        Image {
+                            source: @image-url("../icons/artist.svg");
+                            //source: @image-url("../icons/albumcover.jpg");
+                            width: 60%;
+                            height: 60%;
+                        }
+                    }
+
+                    Rectangle {
+                        width: 100%;
+                        height: 100px;
+                        HorizontalLayout {
+                            alignment: center;
+                            IconButton {
+                                height: 100px;
+                                width: 100px;
+                                icon: @image-url("../icons/skip_previous.svg");
+                                clicked => { CallbackHandler.previousClicked(); }
+                            }
+
+                            IconButton {
+                                height: 100px;
+                                width: 100px;
+                                icon: @image-url("../icons/play_pause.svg");
+                                clicked => { CallbackHandler.playPauseClicked(); }
+                            }
+
+                            IconButton {
+                                height: 100px;
+                                width: 100px;
+                                icon: @image-url("../icons/skip_next.svg");
+                                clicked => { CallbackHandler.nextClicked(); }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                height: 400px;
+                width: 100%;
+                VerticalLayout {
+                    Rectangle {
+                        width: 100%;
+                        height: 300px;
+                        VerticalLayout {
+                            x: 30px;
+                            alignment: center;
+                            Text {
+                                text: CallbackHandler.currentTitle;
+                                font-size: 40pt;
+                                font-family: "Roboto";
+                                overflow: elide;
+                            }
+
+                            Text {
+                                text: CallbackHandler.currentArtist;
+                                font-size: 20pt;
+                                font-family: "Roboto";
+                                overflow: elide;
+                            }
+                        }
+
+                    }
+
+                    Rectangle {
+                        width: 100%;
+                        height: 100px;
+                        HorizontalLayout {
+                            alignment: start;
+                            cross-axis-alignment: center;
+                            spacing: 10px;
+                            x: 10px;
+                            Rectangle {
+                                width: 400px;
+                                height: 150px;
+                                Slider {
+                                    width: 100%;
+                                }
+                            }
+
+                            Text {
+                                text: "00:30 / 02:30";
+                                font-size: 12pt;
+                                font-family: "Roboto";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

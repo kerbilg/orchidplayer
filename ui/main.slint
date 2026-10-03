@@ -1,0 +1,25 @@
+import { AboutSlint, Button, VerticalBox } from "std-widgets.slint";
+import { Sidebar } from "./components/sidebar.slint";
+import { Settings } from "pages/settings.slint";
+import { Search } from "pages/search.slint";
+import { Nowplaying } from "pages/nowplaying.slint";
+import { PrinterState, Page } from "common.slint";
+
+import { CallbackHandler } from "callbacks.slint";
+export { CallbackHandler }
+
+export component MainWindow inherits Window {
+    width: 1024px;
+    height: 600px;
+
+    Rectangle {
+        HorizontalLayout {
+            side-bar := Sidebar {}
+            main-view := Rectangle {
+                if PrinterState.active-page == Page.settings: settings-page := Settings { }
+                if PrinterState.active-page == Page.search: search-page := Search { }
+                if PrinterState.active-page == Page.nowplaying: nowplaying-page := Nowplaying { }
+            }
+        }
+    }
+}

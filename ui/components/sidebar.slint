@@ -1,0 +1,47 @@
+import { IconButton } from "button.slint";
+import { PrinterState, Page } from "../common.slint";
+
+export component Sidebar inherits Rectangle {
+    in property <length> button-size: 100px;
+    background: transparent;
+    width: button-size;
+    height: 100%;
+    VerticalLayout {
+        Rectangle {
+            height: button-size;
+            //background: green;
+            IconButton {
+                height: 100%;
+                width: 100%;
+                icon: @image-url("../icons/equalizer.svg");
+                clicked => {
+                    PrinterState.active-page = Page.nowplaying;
+                }
+            }
+        }
+        Rectangle {
+            height: button-size;
+            //background: blue;
+            IconButton {
+                height: 100%;
+                width: 100%;
+                icon: @image-url("../icons/search.svg");
+                clicked => {
+                    PrinterState.active-page = Page.search;
+                }
+            }
+        }
+        Rectangle {
+            height: button-size;
+            //background: blue;
+            IconButton {
+                height: 100%;
+                width: 100%;
+                icon: @image-url("../icons/settings.svg");
+                clicked => {
+                    PrinterState.active-page = Page.settings;
+                }
+            }
+        }
+    }
+}
