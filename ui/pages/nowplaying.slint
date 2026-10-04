@@ -25,10 +25,9 @@ export component Nowplaying inherits Rectangle {
                         border-radius: 16px;
                         clip: true;
                         Image {
-                            source: @image-url("../icons/artist.svg");
-                            //source: @image-url("../icons/albumcover.jpg");
-                            width: 60%;
-                            height: 60%;
+                            source: CallbackHandler.hasAlbumArt ? CallbackHandler.albumArt : @image-url("../icons/artist.svg");
+                            width: CallbackHandler.hasAlbumArt ? 100% : 60%;
+                            height: CallbackHandler.hasAlbumArt ? 100% : 60%;
                         }
                     }
 
@@ -102,11 +101,19 @@ export component Nowplaying inherits Rectangle {
                                 height: 150px;
                                 Slider {
                                     width: 100%;
+                                    value <=> CallbackHandler.sliderValue;
+                                    minimum: 0;
+                                    maximum: CallbackHandler.duration;
+                                    changed(v) => { CallbackHandler.sliderDragging = true; }
+                                    released(v) => {
+                                        CallbackHandler.sliderDragging = false;
+                                        CallbackHandler.seekRequested(v);
+                                    }
                                 }
                             }
 
                             Text {
-                                text: "00:30 / 02:30";
+                                text: CallbackHandler.positionText + " / " + CallbackHandler.durationText;
                                 font-size: 12pt;
                                 font-family: "Roboto";
                             }

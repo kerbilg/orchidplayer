@@ -1,0 +1,142 @@
+component KeyButton inherits Rectangle {
+    in property <string> label: "";
+    in property <image> icon;
+    in property <bool> has-icon: false;
+    in property <bool> active: false;
+    callback pressed();
+
+    horizontal-stretch: 1;
+    vertical-stretch: 1;
+
+    background: touch.pressed ? rgba(0, 0, 0, 0.2) : (root.active ? rgba(0, 0, 0, 0.28) : rgba(0, 0, 0, 0.08));
+    border-radius: 10px;
+
+    if !root.has-icon: Text {
+        text: root.label;
+        font-size: 16pt;
+        font-family: "Roboto";
+        color: #111111;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+
+    if root.has-icon: Image {
+        source: root.icon;
+        width: 55%;
+        height: 55%;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+
+    touch := TouchArea {
+        clicked => { root.pressed(); }
+    }
+}
+
+export component Keyboard inherits Rectangle {
+    callback keyPressed(string);
+
+    property <bool> shift: false;
+    property <bool> symbols: false;
+
+    property <[string]> row1-lower: ["q", "w", "e", "r", "t", "z", "u", "i", "o", "p", "ü"];
+    property <[string]> row1-upper: ["Q", "W", "E", "R", "T", "Z", "U", "I", "O", "P", "Ü"];
+    property <[string]> row2-lower: ["a", "s", "d", "f", "g", "h", "j", "k", "l", "ö", "ä"];
+    property <[string]> row2-upper: ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ö", "Ä"];
+    property <[string]> row3-lower: ["y", "x", "c", "v", "b", "n", "m"];
+    property <[string]> row3-upper: ["Y", "X", "C", "V", "B", "N", "M"];
+
+    property <[string]> sym1: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+    property <[string]> sym2: ["-", ".", ",", ":", ";", "!", "?", "'", "\""];
+    property <[string]> sym3: ["(", ")", "/", "@", "&", "*", "+"];
+
+    function type-char(k: string) {
+        root.keyPressed(k);
+        if (root.shift) {
+            root.shift = false;
+        }
+    }
+
+    VerticalLayout {
+        padding: 8px;
+        spacing: 6px;
+
+        HorizontalLayout {
+            vertical-stretch: 1;
+            spacing: 6px;
+
+            for key in root.symbols ? root.sym1 : (root.shift ? root.row1-upper : root.row1-lower): KeyButton {
+                label: key;
+                pressed => { root.type-char(key); }
+            }
+        }
+
+        HorizontalLayout {
+            vertical-stretch: 1;
+            spacing: 6px;
+
+            for key in root.symbols ? root.sym2 : (root.shift ? root.row2-upper : root.row2-lower): KeyButton {
+                label: key;
+                pressed => { root.type-char(key); }
+            }
+        }
+
+        HorizontalLayout {
+            vertical-stretch: 1;
+            spacing: 6px;
+
+            if !root.symbols: KeyButton {
+                horizontal-stretch: 1.5;
+                has-icon: true;
+                icon: @image-url("../icons/shift.svg");
+                active: root.shift;
+                pressed => { root.shift = !root.shift; }
+            }
+
+            for key in root.symbols ? root.sym3 : (root.shift ? root.row3-upper : root.row3-lower): KeyButton {
+                label: key;
+                pressed => { root.type-char(key); }
+            }
+
+            KeyButton {
+                horizontal-stretch: 1.5;
+                has-icon: true;
+                icon: @image-url("../icons/backspace.svg");
+                pressed => { root.keyPressed("backspace"); }
+            }
+        }
+
+        HorizontalLayout {
+            vertical-stretch: 1;
+            spacing: 6px;
+
+            KeyButton {
+                horizontal-stretch: 1.5;
+                label: root.symbols ? "ABC" : "123";
+                pressed => { root.symbols = !root.symbols; }
+            }
+
+            KeyButton {
+                horizontal-stretch: 5;
+                pressed => { root.type-char(" "); }
+            }
+
+            KeyButton {
+                label: ".";
+                pressed => { root.type-char("."); }
+            }
+
+            KeyButton {
+                label: "-";
+                pressed => { root.type-char("-"); }
+            }
+
+            KeyButton {
+                horizontal-stretch: 1.5;
+                has-icon: true;
+                icon: @image-url("../icons/keyboard_return.svg");
+                pressed => { root.keyPressed("enter"); }
+            }
+        }
+    }
+}

@@ -1,0 +1,63 @@
+import { ListView } from "std-widgets.slint";
+import { CallbackHandler } from "../callbacks.slint";
+import { PrinterState, Page } from "../common.slint";
+
+export component Playlists inherits Rectangle {
+    background: transparent;
+
+    // Die Seite wird bei jedem Tabwechsel neu erzeugt -> Liste aktualisieren
+    init => {
+        CallbackHandler.playlistsRefreshRequested();
+    }
+
+    if CallbackHandler.playlists.length == 0: Text {
+        text: "Keine Playlists gefunden";
+        color: rgba(0, 0, 0, 0.4);
+        font-size: 16pt;
+        font-family: "Roboto";
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+
+    ListView {
+        for entry in CallbackHandler.playlists: Rectangle {
+            height: 100px;
+
+            Rectangle {
+                x: 12px;
+                y: 6px;
+                width: parent.width - 24px;
+                height: parent.height - 12px;
+                background: touch.pressed ? rgba(0, 0, 0, 0.2) : rgba(0, 0, 0, 0.08);
+                border-radius: 16px;
+
+                Image {
+                    x: 24px;
+                    width: 44px;
+                    height: 44px;
+                    y: parent.height / 2 - 22px;
+                    source: @image-url("../icons/queue_music.svg");
+                }
+
+                Text {
+                    x: 90px;
+                    width: parent.width - 110px;
+                    height: 100%;
+                    text: entry.name;
+                    color: #111111;
+                    font-size: 20pt;
+                    font-family: "Roboto";
+                    vertical-alignment: center;
+                    overflow: elide;
+                }
+            }
+
+            touch := TouchArea {
+                clicked => {
+                    CallbackHandler.playlistSelected(entry.name);
+                    PrinterState.active-page = Page.nowplaying;
+                }
+            }
+        }
+    }
+}

@@ -1,3 +1,13 @@
+export struct PlaylistEntry {
+    name: string,
+}
+
+export struct SongEntry {
+    title: string,
+    artist: string,
+    uri: string,
+}
+
 export global CallbackHandler {
     callback nextClicked;
     callback previousClicked;
@@ -5,5 +15,35 @@ export global CallbackHandler {
 
     in-out property <string> currentTitle: "";
     in-out property <string> currentArtist: "";
+    in-out property <bool> hasAlbumArt: false;
+    in-out property <image> albumArt;
+    in-out property <float> sliderValue: 0;
+    in-out property <float> duration: 100;
+    in-out property <bool> sliderDragging: false;
+    in-out property <string> playState: "";
+    in-out property <string> positionText: "00:00";
+    in-out property <string> durationText: "00:00";
+
+    callback seekRequested(float);
+
+    in-out property <string> mpdHost: "";
+    in-out property <string> mpdPort: "";
+    in-out property <string> settingsStatus: "";
+    in-out property <string> settingsFocus: "host";
+
+    callback saveSettings(string, string);
+    callback settingsKeyPressed(string);
+
+    in-out property <string> searchQuery: "";
+    in-out property <string> searchStatus: "";
+    in-out property <[SongEntry]> searchResults: [];
+
+    callback oskKeyPressed(string);
+    callback songSelected(string, string);
+
+    in-out property <[PlaylistEntry]> playlists: [];
+
+    callback playlistsRefreshRequested();
+    callback playlistSelected(string);
 
 }

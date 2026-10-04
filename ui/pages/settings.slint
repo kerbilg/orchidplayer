@@ -1,7 +1,123 @@
-export component Settings inherits Rectangle {
-    Rectangle {
-        width: 100%;
+import { Button } from "std-widgets.slint";
+import { Keyboard } from "../components/keyboard.slint";
+import { CallbackHandler } from "../callbacks.slint";
+
+component SettingField inherits Rectangle {
+    in property <string> value: "";
+    in property <string> placeholder: "";
+    in property <bool> focused: false;
+    callback clicked();
+
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    border-width: 2px;
+    border-color: root.focused ? #0078d4 : transparent;
+    clip: true;
+
+    Text {
+        x: 16px;
+        width: parent.width - 32px;
         height: 100%;
-        background: purple;
+        text: root.value == "" ? root.placeholder : root.value;
+        color: root.value == "" ? rgba(0, 0, 0, 0.4) : #111111;
+        font-size: 16pt;
+        font-family: "Roboto";
+        vertical-alignment: center;
+        overflow: elide;
+    }
+
+    TouchArea {
+        clicked => { root.clicked(); }
+    }
+}
+
+export component Settings inherits Rectangle {
+    background: transparent;
+
+    VerticalLayout {
+        // Obere Bildschirmhälfte: Einstellungsfelder
+        Rectangle {
+            vertical-stretch: 1;
+
+            VerticalLayout {
+                alignment: center;
+                padding-left: 30px;
+                padding-right: 30px;
+                spacing: 10px;
+
+                Text {
+                    height: 32px;
+                    text: "Einstellungen";
+                    font-size: 20pt;
+                    font-family: "Roboto";
+                }
+
+                HorizontalLayout {
+                    height: 56px;
+                    spacing: 10px;
+
+                    Text {
+                        text: "MPD Host:";
+                        width: 100px;
+                        vertical-alignment: center;
+                        font-size: 12pt;
+                        font-family: "Roboto";
+                    }
+
+                    SettingField {
+                        value: CallbackHandler.mpdHost;
+                        placeholder: "localhost";
+                        focused: CallbackHandler.settingsFocus == "host";
+                        clicked => { CallbackHandler.settingsFocus = "host"; }
+                    }
+                }
+
+                HorizontalLayout {
+                    height: 56px;
+                    spacing: 10px;
+
+                    Text {
+                        text: "MPD Port:";
+                        width: 100px;
+                        vertical-alignment: center;
+                        font-size: 12pt;
+                        font-family: "Roboto";
+                    }
+
+                    SettingField {
+                        value: CallbackHandler.mpdPort;
+                        placeholder: "6600";
+                        focused: CallbackHandler.settingsFocus == "port";
+                        clicked => { CallbackHandler.settingsFocus = "port"; }
+                    }
+                }
+
+                HorizontalLayout {
+                    height: 44px;
+                    spacing: 10px;
+                    alignment: start;
+
+                    Button {
+                        text: "Speichern";
+                        clicked => {
+                            CallbackHandler.saveSettings(CallbackHandler.mpdHost, CallbackHandler.mpdPort);
+                        }
+                    }
+
+                    Text {
+                        text: CallbackHandler.settingsStatus;
+                        vertical-alignment: center;
+                        font-size: 10pt;
+                        font-family: "Roboto";
+                    }
+                }
+            }
+        }
+
+        // Untere Bildschirmhälfte: Bildschirmtastatur
+        Keyboard {
+            vertical-stretch: 1;
+            keyPressed(key) => { CallbackHandler.settingsKeyPressed(key); }
+        }
     }
 }

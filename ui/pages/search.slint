@@ -1,10 +1,100 @@
-import { Slider } from "std-widgets.slint";
-import { Slider } from "../components/slider.slint";
+import { ListView } from "std-widgets.slint";
+import { Keyboard } from "../components/keyboard.slint";
+import { CallbackHandler } from "../callbacks.slint";
+
 export component Search inherits Rectangle {
-    Rectangle {
-        width: 100%;
-        height: 100%;
-        Slider {
+    VerticalLayout {
+        // Obere Bildschirmhälfte: Eingabeanzeige + Trefferliste
+        Rectangle {
+            vertical-stretch: 1;
+
+            VerticalLayout {
+                padding-left: 30px;
+                padding-right: 30px;
+                padding-top: 16px;
+                spacing: 8px;
+
+                Rectangle {
+                    height: 64px;
+                    background: rgba(0, 0, 0, 0.1);
+                    border-radius: 16px;
+                    clip: true;
+
+                    Text {
+                        x: 24px;
+                        width: parent.width - 48px;
+                        height: 100%;
+                        text: CallbackHandler.searchQuery == "" ? "Suchen…" : CallbackHandler.searchQuery;
+                        color: CallbackHandler.searchQuery == "" ? rgba(0, 0, 0, 0.4) : #111111;
+                        font-size: 20pt;
+                        font-family: "Roboto";
+                        vertical-alignment: center;
+                        overflow: elide;
+                    }
+                }
+
+                Text {
+                    height: 20px;
+                    text: CallbackHandler.searchStatus;
+                    color: rgba(0, 0, 0, 0.6);
+                    font-size: 10pt;
+                    font-family: "Roboto";
+                    horizontal-alignment: center;
+                }
+
+                ListView {
+                    vertical-stretch: 1;
+
+                    for song in CallbackHandler.searchResults: Rectangle {
+                        height: 76px;
+
+                        Rectangle {
+                            x: 6px;
+                            y: 4px;
+                            width: parent.width - 12px;
+                            height: parent.height - 8px;
+                            background: touch.pressed ? rgba(0, 0, 0, 0.2) : rgba(0, 0, 0, 0.08);
+                            border-radius: 16px;
+
+                            Text {
+                                x: 20px;
+                                y: 10px;
+                                width: parent.width - 40px;
+                                height: 28px;
+                                text: song.title;
+                                color: #111111;
+                                font-size: 13pt;
+                                font-family: "Roboto";
+                                overflow: elide;
+                            }
+
+                            Text {
+                                x: 20px;
+                                y: 38px;
+                                width: parent.width - 40px;
+                                height: 22px;
+                                text: song.artist;
+                                color: rgba(0, 0, 0, 0.55);
+                                font-size: 10pt;
+                                font-family: "Roboto";
+                                overflow: elide;
+                            }
+                        }
+
+                        touch := TouchArea {
+                            clicked => {
+                                CallbackHandler.songSelected(song.uri, song.title);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Untere Bildschirmhälfte: Bildschirmtastatur
+        Keyboard {
+            vertical-stretch: 1;
+            keyPressed(key) => { CallbackHandler.oskKeyPressed(key); }
         }
     }
 }

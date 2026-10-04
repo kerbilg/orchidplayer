@@ -33,6 +33,18 @@ export component Sidebar inherits Rectangle {
         }
         Rectangle {
             height: button-size;
+            //background: green;
+            IconButton {
+                height: 100%;
+                width: 100%;
+                icon: @image-url("../icons/queue_music.svg");
+                clicked => {
+                    PrinterState.active-page = Page.playlists;
+                }
+            }
+        }
+        Rectangle {
+            height: button-size;
             //background: blue;
             IconButton {
                 height: 100%;

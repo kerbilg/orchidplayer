@@ -16,10 +16,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
     "full": "SLINT_FULLSCREEN=1 SLINT_SCALE_FACTOR=1 node src/index.js"
-
   },
   "dependencies": {
     "mpc-js": "^2.1.1",
+    "sharp": "^0.35.5",
     "slint-ui": "^1.18.0"
   }
 }

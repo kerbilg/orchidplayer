@@ -2,6 +2,7 @@ import { AboutSlint, Button, VerticalBox } from "std-widgets.slint";
 import { Sidebar } from "./components/sidebar.slint";
 import { Settings } from "pages/settings.slint";
 import { Search } from "pages/search.slint";
+import { Playlists } from "pages/playlists.slint";
 import { Nowplaying } from "pages/nowplaying.slint";
 import { PrinterState, Page } from "common.slint";
 
@@ -18,6 +19,7 @@ export component MainWindow inherits Window {
             main-view := Rectangle {
                 if PrinterState.active-page == Page.settings: settings-page := Settings { }
                 if PrinterState.active-page == Page.search: search-page := Search { }
+                if PrinterState.active-page == Page.playlists: playlists-page := Playlists { }
                 if PrinterState.active-page == Page.nowplaying: nowplaying-page := Nowplaying { }
             }
         }
