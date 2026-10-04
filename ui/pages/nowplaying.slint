@@ -14,7 +14,7 @@ export component Nowplaying inherits Rectangle {
             x: 20px;
             Rectangle {
                 width: 300px;
-                height: 400px;
+                height: 440px;
                 VerticalLayout {
                     alignment: center;
                     cross-axis-alignment: center;
@@ -33,7 +33,7 @@ export component Nowplaying inherits Rectangle {
 
                     Rectangle {
                         width: 100%;
-                        height: 100px;
+                        height: 140px;
                         HorizontalLayout {
                             alignment: center;
                             IconButton {
@@ -62,7 +62,8 @@ export component Nowplaying inherits Rectangle {
             }
 
             Rectangle {
-                height: 400px;
+                height: 440px;
+                background: green;
                 width: 100%;
                 VerticalLayout {
                     Rectangle {
@@ -91,6 +92,8 @@ export component Nowplaying inherits Rectangle {
                     Rectangle {
                         width: 100%;
                         height: 100px;
+                        background: red;
+
                         HorizontalLayout {
                             alignment: start;
                             cross-axis-alignment: center;
@@ -114,6 +117,48 @@ export component Nowplaying inherits Rectangle {
 
                             Text {
                                 text: CallbackHandler.positionText + " / " + CallbackHandler.durationText;
+                                font-size: 12pt;
+                                font-family: "Roboto";
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        width: 100%;
+                        height: 40px;
+                        background: yellow;
+                        HorizontalLayout {
+                            alignment: start;
+                            cross-axis-alignment: center;
+                            spacing: 10px;
+                            x: 10px;
+                            IconButton {
+                                width: 40px;
+                                height: 40px;
+                                icon: CallbackHandler.muted || CallbackHandler.volume == 0
+                                    ? @image-url("../icons/volume_off.svg")
+                                    : @image-url("../icons/volume_up.svg");
+                                clicked => { CallbackHandler.muteToggled(); }
+                            }
+
+                            Rectangle {
+                                width: 300px;
+                                height: 40px;
+                                Slider {
+                                    width: 100%;
+                                    value <=> CallbackHandler.volume;
+                                    minimum: 0;
+                                    maximum: 100;
+                                    changed(v) => { CallbackHandler.volumeDragging = true; }
+                                    released(v) => {
+                                        CallbackHandler.volumeDragging = false;
+                                        CallbackHandler.volumeChanged(v);
+                                    }
+                                }
+                            }
+
+                            Text {
+                                text: CallbackHandler.muted ? "Aus" : round(CallbackHandler.volume) + "%";
                                 font-size: 12pt;
                                 font-family: "Roboto";
                             }

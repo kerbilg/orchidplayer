@@ -6,6 +6,8 @@ export class PlayerState {
     this.position = 0;
     this.duration = 0;
     this.playState = "";
+    this.volume = 0;
+    this.muted = false;
     this.listeners = new Set();
   }
 
@@ -35,6 +37,12 @@ export class PlayerState {
     this.emit();
   }
 
+  updateVolume({ volume, muted } = {}) {
+    if (volume !== undefined) this.volume = Number(volume) || 0;
+    if (muted !== undefined) this.muted = Boolean(muted);
+    this.emit();
+  }
+
   subscribe(listener) {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
@@ -49,6 +57,8 @@ export class PlayerState {
         position: this.position,
         duration: this.duration,
         playState: this.playState,
+        volume: this.volume,
+        muted: this.muted,
       });
     }
   }

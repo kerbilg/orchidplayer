@@ -26,6 +26,13 @@ export global CallbackHandler {
 
     callback seekRequested(float);
 
+    in-out property <float> volume: 0;
+    in-out property <bool> muted: false;
+    in-out property <bool> volumeDragging: false;
+
+    callback volumeChanged(float);
+    callback muteToggled();
+
     in-out property <string> mpdHost: "";
     in-out property <string> mpdPort: "";
     in-out property <string> settingsStatus: "";

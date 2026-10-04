@@ -9,11 +9,12 @@ function formatTime(seconds) {
 }
 
 export class SlintApp {
-  constructor(playerController, playerState, settings, searchController) {
+  constructor(playerController, playerState, settings, searchController, volumeController) {
     this.playerController = playerController;
     this.playerState = playerState;
     this.settings = settings;
     this.searchController = searchController;
+    this.volumeController = volumeController;
     this.ui = slint.loadFile(PATHS.mainUi, { style: "fluent-light" });
     this.app = new this.ui.MainWindow();
     this.callbackHandler = this.app.CallbackHandler;
@@ -40,7 +41,15 @@ export class SlintApp {
       void this.playerController.togglePlayPause();
     };
 
-    this.playerState.subscribe(({ currentTitle, currentArtist, albumArt, position, duration, playState }) => {
+    this.callbackHandler.volumeChanged = (volume) => {
+      void this.volumeController.setVolume(volume);
+    };
+
+    this.callbackHandler.muteToggled = () => {
+      void this.volumeController.toggleMute();
+    };
+
+    this.playerState.subscribe(({ currentTitle, currentArtist, albumArt, position, duration, playState, volume, muted }) => {
       this.callbackHandler.currentTitle = currentTitle;
       this.callbackHandler.currentArtist = currentArtist;
       this.callbackHandler.hasAlbumArt = albumArt != null;
@@ -55,6 +64,11 @@ export class SlintApp {
       if (!this.callbackHandler.sliderDragging) {
         this.callbackHandler.sliderValue = position;
         this.callbackHandler.duration = duration > 0 ? duration : 100;
+      }
+
+      this.callbackHandler.muted = muted;
+      if (!this.callbackHandler.volumeDragging) {
+        this.callbackHandler.volume = volume;
       }
     });
   }

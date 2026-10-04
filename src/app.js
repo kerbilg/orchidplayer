@@ -4,6 +4,8 @@ import { AlbumArtService } from "./services/albumArtService.js";
 import { PlayerState } from "./state/playerState.js";
 import { PlayerController } from "./controllers/playerController.js";
 import { SearchController } from "./controllers/searchController.js";
+import { VolumeController } from "./controllers/volumeController.js";
+import { VolumeService } from "./services/volumeService.js";
 import { SlintApp } from "./ui/slintApp.js";
 
 export async function createApp() {
@@ -13,12 +15,15 @@ export async function createApp() {
   const albumArtService = new AlbumArtService(mpcClient);
   const playerController = new PlayerController(mpcClient, playerState, albumArtService);
   const searchController = new SearchController(mpcClient);
-  const ui = new SlintApp(playerController, playerState, settings, searchController);
+  const volumeService = new VolumeService();
+  const volumeController = new VolumeController(volumeService, playerState);
+  const ui = new SlintApp(playerController, playerState, settings, searchController, volumeController);
 
   // Nicht fatal: Ohne Verbindung startet die UI trotzdem, damit z. B. ein
   // falsch gespeicherter Host in den Einstellungen korrigiert werden kann.
   mpcClient.connect().catch((error) => console.error("MPD-Verbindung fehlgeschlagen:", error));
   playerController.start();
+  volumeController.start();
   ui.bind();
 
   return {
@@ -27,6 +32,7 @@ export async function createApp() {
     playerState,
     playerController,
     searchController,
+    volumeController,
     ui,
   };
 }
